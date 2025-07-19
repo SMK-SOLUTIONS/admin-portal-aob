@@ -1,0 +1,16 @@
+{
+  "CH": [
+    "view_applications",
+    "edit_applications"
+  ],
+  "BH": [
+    "view_applications",
+    "view_reports"
+  ],
+  "Super Admin": [
+    "view_applications",
+    "edit_applications",
+    "delete_users",
+    "manage_roles"
+  ]
+}

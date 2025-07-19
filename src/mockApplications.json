@@ -1,0 +1,30 @@
+[
+    {
+        "appNo": "ABC00001",
+        "partner": "ABC",
+        "dateSubmitted": "2025-05-02",
+        "chApproval": "2025-05-03",
+        "bhApproval": "2025-05-03",
+        "finance": "2025-05-04",
+        "channel": "2025-05-06",
+        "legal": "2025-05-09",
+        "partnerEsign": "2025-05-12",
+        "legalHeadEsign": "2025-05-12",
+        "sap": "2025-05-14",
+        "codeCreation": "2025-05-14"
+    },
+    {
+        "appNo": "ABC00002",
+        "partner": "DEF",
+        "dateSubmitted": "2025-05-03",
+        "chApproval": "2025-05-03",
+        "bhApproval": "2025-05-04",
+        "finance": "2025-05-06",
+        "channel": "2025-05-09",
+        "legal": "2025-05-12",
+        "partnerEsign": "2025-05-12",
+        "legalHeadEsign": "2025-05-14",
+        "sap": "2025-05-15",
+        "codeCreation": "2025-05-15"
+    }
+]

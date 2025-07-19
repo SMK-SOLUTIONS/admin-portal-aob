@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "mobile": "9876543210",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "region": "South",
+    "tcode": "T001",
+    "designation": "CH",
+    "email": "john@example.com",
+    "reportingCH": "Ravi Kumar",
+    "reportingBH": "Sumanth Rao"
+  }
+]

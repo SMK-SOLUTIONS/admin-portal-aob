@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Chart, registerables } from 'chart.js';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import * as XLSX from 'xlsx';
-Chart.register(...registerables);
 
 const StampPaperDashboard = () => {
   const [dateRange, setDateRange] = useState({ from: '', to: '' });
@@ -10,7 +9,6 @@ const StampPaperDashboard = () => {
   const [mockData, setMockData] = useState([]);
 
   useEffect(() => {
-    // Simulate fetching from JSON file
     const fetchData = async () => {
       const data = [
         { region: 'North', used: 20, available: 45, date: '2025-07-10' },
@@ -41,34 +39,17 @@ const StampPaperDashboard = () => {
   const usedData = filteredData.map((item) => item.used);
   const availableData = filteredData.map((item) => item.available);
 
-  const data = {
-    labels: regions,
-    datasets: [
-      {
-        label: 'Used',
-        backgroundColor: '#eaf3fc',
-        data: usedData,
-      },
-      {
-        label: 'Available',
-        backgroundColor: '#034ea2',
-        data: availableData,
-      },
+  const chartOptions = {
+    chart: { type: 'column', height: 300 },
+    title: { text: 'Real-Time Stamp Paper Usage & Availability by Region' },
+    xAxis: { categories: regions, title: { text: 'Region' } },
+    yAxis: { min: 0, title: { text: 'Count' } },
+    series: [
+      { name: 'Used', data: usedData, color: '#eaf3fc' },
+      { name: 'Available', data: availableData, color: '#034ea2' },
     ],
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Real-Time Stamp Paper Usage & Availability by Region',
-      },
-    },
+    legend: { align: 'center', verticalAlign: 'bottom' },
+    credits: { enabled: false },
   };
 
   const downloadExcel = () => {
@@ -111,8 +92,8 @@ const StampPaperDashboard = () => {
         </div>
       </div>
 
-      <div style={{ width: '100%', height: '500px' }}>
-        <Bar data={data} options={options} />
+      <div className="w-full overflow-x-auto">
+        <HighchartsReact highcharts={Highcharts} options={chartOptions} />
       </div>
     </div>
   );

@@ -24,13 +24,13 @@ const roles = [
 ];
 
 const permissions = [
-  'view_users', 'edit_users', 'delete_users',
-  'view_reports', 'edit_applications'
+  'View Users', 'Edit Users', 'Delete Users',
+  'View Reports', 'Edit Applications'
 ];
 
 const initialAssignments = [
-  { role: 'CH', permissions: ['view_users', 'edit_users', 'view_reports'] },
-  { role: 'BH', permissions: ['view_users', 'view_reports'] }
+  { role: 'CH', permissions: ['View Users', 'Edit Users', 'View Reports'] },
+  { role: 'BH', permissions: ['View Users', 'View Reports'] }
 ];
 
 const RBAC = () => {
@@ -59,7 +59,7 @@ const RBAC = () => {
 
   return (
     <Box p={4}>
-      <Typography variant="h6" mb={2}>
+      <Typography variant="h5" mb={3}>
         Role-Based Access Control (RBAC)
       </Typography>
 

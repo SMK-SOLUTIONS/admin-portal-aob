@@ -4,7 +4,7 @@ import {
   Drawer,
   IconButton,
   List,
-  ListItem,
+  ListItemButton,
   ListItemText,
   Toolbar,
   Box,
@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AgilusLogoBlue from './Agilus Logo-blue-bg.jpg';
 
 function Sidebar({ onLogout, isOpen, setIsOpen }) {
   const toggleDrawer = () => {
@@ -36,7 +37,7 @@ function Sidebar({ onLogout, isOpen, setIsOpen }) {
       {!isOpen && (
         <IconButton
           onClick={toggleDrawer}
-          sx={{ position: 'fixed', top: 16, left: 16, zIndex: 1300, color: 'white', bgcolor: '#034ea2', '&:hover': { color: '#034ea2', bgcolor: '#2967aa' } }}
+          sx={{ position: 'fixed', top: 8, left: 8, zIndex: 1400, color: 'white', bgcolor: '#034ea2', '&:hover': { bgcolor: '#2967aa' } }}
         >
           <MenuIcon />
         </IconButton>
@@ -46,21 +47,21 @@ function Sidebar({ onLogout, isOpen, setIsOpen }) {
           variant="persistent"
           anchor="left"
           open={isOpen}
-          PaperProps={{ sx: { width: 240, bgcolor: '#034ea2', color: 'white' } }}
+          PaperProps={{ sx: { width: 240, bgcolor: '#0076bc', color: 'white' } }}
         >
-          <Toolbar sx={{ justifyContent: 'space-between', bgcolor: '#034ea2' }}>
-            <Typography variant="h6" noWrap component="div">
+          <Toolbar sx={{ justifyContent: 'space-between', bgcolor: '#0076bc' }}>
+            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1}}>
+              <img src={AgilusLogoBlue} alt="Logo" className="mb-2 w-32" />
               Admin Portal
             </Typography>
-            <IconButton onClick={toggleDrawer} sx={{ color: 'white' }}>
+            <IconButton onClick={toggleDrawer} sx={{ color: 'white', bgcolor: '#0076bc' }}>
               <MenuIcon />
             </IconButton>
           </Toolbar>
           <Divider sx={{ borderColor: 'white', opacity: 0.2 }} />
           <List>
             {navItems.map(({ path, label }) => (
-              <ListItem
-                button
+              <ListItemButton
                 key={label}
                 component={NavLink}
                 to={path}
@@ -72,7 +73,7 @@ function Sidebar({ onLogout, isOpen, setIsOpen }) {
                 sx={{ pl: 2 }}
               >
                 <ListItemText primary={label} />
-              </ListItem>
+              </ListItemButton>
             ))}
           </List>
           <Box sx={{ mt: 'auto'}}>

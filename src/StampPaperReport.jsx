@@ -1,5 +1,16 @@
-
 import { useState } from 'react';
+import {
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableContainer,
+  Paper,
+  Typography,
+  Grid
+} from '@mui/material';
 
 const rawStampData = [
   {
@@ -36,36 +47,68 @@ const StampPaperReport = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Stamp Paper Consumption Report</h2>
+      <Typography variant="h5" mb={3}>
+        Stamp Paper Consumption Report
+      </Typography>
 
-      <div className="flex gap-4 mb-4">
-        <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)} className="border px-2 py-1 rounded" />
-        <input type="date" value={toDate} onChange={e => setToDate(e.target.value)} className="border px-2 py-1 rounded" />
-        <input type="text" placeholder="Partner Name" value={partnerFilter} onChange={e => setPartnerFilter(e.target.value)} className="border px-2 py-1 rounded" />
-      </div>
+      <Grid container spacing={2} className="mb-4">
+        <Grid item xs={12} sm={3}>
+          <TextField
+            label="From Date"
+            type="date"
+            value={fromDate}
+            onChange={e => setFromDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            label="To Date"
+            type="date"
+            value={toDate}
+            onChange={e => setToDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Partner Name"
+            value={partnerFilter}
+            onChange={e => setPartnerFilter(e.target.value)}
+            fullWidth
+            size="small"
+          />
+        </Grid>
+      </Grid>
 
-      <table className="w-full border text-sm">
-        <thead>
-          <tr className="bg-[#eaf3fc]">
-            <th className="border p-2">Stamp No</th>
-            <th className="border p-2">Partner Name</th>
-            <th className="border p-2">Partner Code</th>
-            <th className="border p-2">Procurement Date</th>
-            <th className="border p-2">E-sign Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map((row, idx) => (
-            <tr key={idx}>
-              <td className="border p-2">{row.number}</td>
-              <td className="border p-2">{row.partnerName}</td>
-              <td className="border p-2">{row.partnerCode}</td>
-              <td className="border p-2">{row.procured}</td>
-              <td className="border p-2">{row.eSigned}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <TableContainer component={Paper} className="shadow">
+        <Table size="small">
+          <TableHead>
+            <TableRow className="bg-[#eaf3fc]">
+              <TableCell><strong>Stamp No</strong></TableCell>
+              <TableCell><strong>Partner Name</strong></TableCell>
+              <TableCell><strong>Partner Code</strong></TableCell>
+              <TableCell><strong>Procurement Date</strong></TableCell>
+              <TableCell><strong>E-sign Date</strong></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filtered.map((row, idx) => (
+              <TableRow key={idx}>
+                <TableCell>{row.number}</TableCell>
+                <TableCell>{row.partnerName}</TableCell>
+                <TableCell>{row.partnerCode}</TableCell>
+                <TableCell>{row.procured}</TableCell>
+                <TableCell>{row.eSigned}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };

@@ -2,6 +2,13 @@ import { useState, useEffect } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import * as XLSX from 'xlsx';
+import {
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Paper
+} from '@mui/material';
 
 const StampPaperDashboard = () => {
   const [dateRange, setDateRange] = useState({ from: '', to: '' });
@@ -60,42 +67,52 @@ const StampPaperDashboard = () => {
   };
 
   return (
-    <div className="p-4 bg-white shadow rounded">
-      <h2 className="text-xl font-bold mb-4 text-[#034ea2]">Stamp Paper Dashboard</h2>
+    <Paper className="p-6 shadow rounded">
+      <Typography variant="h5" mb={3}>
+        Stamp Paper Dashboard
+      </Typography>
 
-      <div className="mb-4 flex gap-4 flex-wrap">
-        <div>
-          <label className="block text-sm font-medium">From</label>
-          <input
+      <Grid container spacing={2} className="mb-4">
+        <Grid item xs={12} sm={3}>
+          <TextField
+            label="From"
             type="date"
             value={dateRange.from}
             onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
-            className="border p-2 rounded"
+            InputLabelProps={{ shrink: true }}
+            size="small"
+            fullWidth
           />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">To</label>
-          <input
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            label="To"
             type="date"
             value={dateRange.to}
             onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
-            className="border p-2 rounded"
+            InputLabelProps={{ shrink: true }}
+            size="small"
+            fullWidth
           />
-        </div>
-        <div className="self-end">
-          <button
+        </Grid>
+        <Grid item xs={12} sm={6} className="flex items-end justify-end">
+          <Button
+            variant="contained"
             onClick={downloadExcel}
-            className="bg-[#034ea2] text-white px-4 py-2 rounded hover:bg-blue-700"
+            sx={{
+              bgcolor: '#034ea2',
+              '&:hover': { bgcolor: '#023b7e' },
+            }}
           >
             Download Excel
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Grid>
+      </Grid>
 
-      <div className="w-full overflow-x-auto">
+      <div className="overflow-x-auto">
         <HighchartsReact highcharts={Highcharts} options={chartOptions} />
       </div>
-    </div>
+    </Paper>
   );
 };
 

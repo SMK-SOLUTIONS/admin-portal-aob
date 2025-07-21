@@ -1,5 +1,16 @@
-
 import { useState } from 'react';
+import {
+  Typography,
+  TextField,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
+} from '@mui/material';
 
 const rawData = [
   {
@@ -15,6 +26,8 @@ const rawData = [
     approvals: ['2025-05-03', '2025-05-04', '2025-05-06', '2025-05-09', '2025-05-12', '2025-05-12', '2025-05-14', '2025-05-15', '2025-05-15']
   }
 ];
+
+const headers = ['App No', 'Partner', 'Submitted', 'CH', 'BH', 'Fin', 'Channel', 'Legal', 'PE-sign', 'LH-esign', 'SAP', 'Code'];
 
 const DetailedApplicationReport = () => {
   const [fromDate, setFromDate] = useState('');
@@ -32,33 +45,71 @@ const DetailedApplicationReport = () => {
     );
   });
 
-  const headers = ['App No', 'Partner', 'Submitted', 'CH', 'BH', 'Fin', 'Channel', 'Legal', 'PE-sign', 'LH-esign', 'SAP', 'Code'];
-
   return (
     <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Detailed Application Report</h2>
+      <Typography variant="h5" mb={3}>
+        Detailed Application Report
+      </Typography>
 
-      <div className="flex gap-4 mb-4">
-        <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)} className="border px-2 py-1 rounded" />
-        <input type="date" value={toDate} onChange={e => setToDate(e.target.value)} className="border px-2 py-1 rounded" />
-        <input type="text" placeholder="Partner Name" value={partnerFilter} onChange={e => setPartnerFilter(e.target.value)} className="border px-2 py-1 rounded" />
-      </div>
+      <Grid container spacing={2} className="mb-4">
+        <Grid item xs={12} sm={3}>
+          <TextField
+            label="From Date"
+            type="date"
+            value={fromDate}
+            onChange={e => setFromDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            label="To Date"
+            type="date"
+            value={toDate}
+            onChange={e => setToDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="Partner Name"
+            value={partnerFilter}
+            onChange={e => setPartnerFilter(e.target.value)}
+            fullWidth
+            size="small"
+          />
+        </Grid>
+      </Grid>
 
-      <table className="w-full border text-sm">
-        <thead>
-          <tr className="bg-[#eaf3fc]">{headers.map((h, idx) => <th key={idx} className="border p-2">{h}</th>)}</tr>
-        </thead>
-        <tbody>
-          {filteredData.map((row, idx) => (
-            <tr key={idx}>
-              <td className="border p-2">{row.appNo}</td>
-              <td className="border p-2">{row.partner}</td>
-              <td className="border p-2">{row.submitted}</td>
-              {row.approvals.map((date, i) => <td key={i} className="border p-2">{date}</td>)}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <TableContainer component={Paper} className="shadow">
+        <Table size="small">
+          <TableHead>
+            <TableRow className="bg-[#eaf3fc]">
+              {headers.map((h, idx) => (
+                <TableCell key={idx}>
+                  <strong>{h}</strong>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredData.map((row, idx) => (
+              <TableRow key={idx}>
+                <TableCell>{row.appNo}</TableCell>
+                <TableCell>{row.partner}</TableCell>
+                <TableCell>{row.submitted}</TableCell>
+                {row.approvals.map((date, i) => (
+                  <TableCell key={i}>{date}</TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };

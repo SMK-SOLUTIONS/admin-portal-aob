@@ -31,7 +31,9 @@ const RBACManagement = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Role-Based Access Control (RBAC)</h2>
+      <Typography variant="h5" mb={3}>
+        Role-Based Access Control (RBAC)
+      </h2>
       <div className="flex mb-4 gap-4">
         <select
           value={selectedRole}

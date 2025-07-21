@@ -36,16 +36,17 @@ function LoginPage({ onLogin }) {
             className={`mx-auto w-52 transition-opacity duration-300 ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setLogoLoaded(true)}
           />
-        </div>        {step === 1 && (
+        </div>
+        {step === 1 && (
           <>
             <label className="block text-left font-semibold text-[#034ea2] mb-2">Mobile / Email ID
-            <input
-              type="text"
-              value={emailOrMobile}
-              onChange={(e) => setEmailOrMobile(e.target.value)}
-              className="w-full px-4 py-2 border rounded mb-4"
-              placeholder="Enter Mobile or Email"
-            />
+              <input
+                type="text"
+                value={emailOrMobile}
+                onChange={(e) => setEmailOrMobile(e.target.value)}
+                className="w-full px-4 py-2 border rounded mb-4"
+                placeholder="Enter Mobile or Email"
+              />
             </label>
             <div className="flex justify-between text-sm mb-4">
               <label>

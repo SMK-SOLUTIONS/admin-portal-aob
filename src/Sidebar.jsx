@@ -75,12 +75,12 @@ function Sidebar({ onLogout, isOpen, setIsOpen }) {
               </ListItem>
             ))}
           </List>
-          <Box sx={{ mt: 'auto', p: 2 }}>
+          <Box sx={{ mt: 'auto'}}>
             <IconButton
               onClick={onLogout}
-              sx={{ color: 'white', width: '100%', borderRadius: '2px' }}
+              sx={{ color: 'white', width: '100%', borderRadius: '2px', justifyContent: 'flex-start', fontSize: 'medium' }}
             >
-              <LogoutIcon sx={{ mr: 1 }} /> Logout
+              <LogoutIcon sx={{ mr: 1, fontSize: 'medium' }} /> Logout
             </IconButton>
           </Box>
         </Drawer>

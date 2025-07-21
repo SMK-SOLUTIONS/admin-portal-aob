@@ -1,4 +1,16 @@
-
+import {
+  Box,
+  Grid,
+  TextField,
+  Typography,
+  Button,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import data from './mockApplications.json';
@@ -15,7 +27,8 @@ const ApplicationAccess = () => {
 
   const filterByDate = (dateStr) => {
     const date = new Date(dateStr);
-    return (!startDate || date >= new Date(startDate)) && (!endDate || date <= new Date(endDate));
+    return (!startDate || date >= new Date(startDate)) &&
+           (!endDate || date <= new Date(endDate));
   };
 
   const filteredApps = applications.filter(app =>
@@ -31,70 +44,91 @@ const ApplicationAccess = () => {
     XLSX.writeFile(wb, 'ApplicationList.xlsx');
   };
 
-  const highlightClass = (date) => {
-    return date ? "bg-[#eaf3fc]" : "bg-red-100";
-  };
+  const getCellStyle = (date) => ({
+    backgroundColor: date ? '#eaf3fc' : '#fdecea',
+    padding: '8px',
+    border: '1px solid #ccc',
+  });
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen text-gray-800">
-      <h1 className="text-2xl font-semibold mb-4">Application Access</h1>
+    <Box p={4} sx={{ backgroundColor: '#f9fafb', minHeight: '100vh' }}>
+      <Typography variant="h5" mb={3}>
+        Application Access
+      </Typography>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <input
-          type="text"
-          placeholder="Search by Application No or Partner"
-          className="p-2 border border-gray-300 rounded w-full"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <input
-          type="date"
-          className="p-2 border border-gray-300 rounded w-full"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <input
-          type="date"
-          className="p-2 border border-gray-300 rounded w-full"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-      </div>
+      <Grid container spacing={2} mb={2}>
+        <Grid item xs={12} md={4}>
+          <TextField
+            fullWidth
+            label="Search by App No or Partner"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <TextField
+            fullWidth
+            label="Start Date"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <TextField
+            fullWidth
+            label="End Date"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+        </Grid>
+      </Grid>
 
-      <button onClick={exportToExcel} className="mb-4 bg-[#034ea2] text-white px-4 py-2 rounded hover:bg-[#034da296]">
+      <Button
+        variant="contained"
+        onClick={exportToExcel}
+        sx={{ backgroundColor: '#034ea2', mb: 3 }}
+      >
         Export to Excel
-      </button>
+      </Button>
 
-      <div className="overflow-x-auto bg-white shadow rounded-lg p-4">
-        <table className="min-w-full text-sm border border-gray-300">
-          <thead className="bg-[#eaf3fc]">
-            <tr>
-              {['App No', 'Partner', 'Submitted', 'CH', 'BH', 'Finance', 'Channel', 'Legal', 'Partner E-sign', 'Legal Head E-sign', 'SAP', 'Code'].map(col => (
-                <th key={col} className="border p-2 text-left">{col}</th>
+      <Paper sx={{ overflowX: 'auto' }}>
+        <Table size="small">
+          <TableHead sx={{ backgroundColor: '#eaf3fc' }}>
+            <TableRow>
+              {[
+                'App No', 'Partner', 'Submitted',
+                'CH', 'BH', 'Finance', 'Channel', 'Legal',
+                'Partner E-sign', 'Legal Head E-sign', 'SAP', 'Code'
+              ].map(col => (
+                <TableCell key={col}><strong>{col}</strong></TableCell>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {filteredApps.map((row, i) => (
-              <tr key={i} className="bg-white border-t">
-                <td className="border p-2">{row.appNo}</td>
-                <td className="border p-2">{row.partner}</td>
-                <td className="border p-2">{row.dateSubmitted}</td>
-                <td className={"border p-2 " + highlightClass(row.chApproval)}>{row.chApproval || '-'}</td>
-                <td className={"border p-2 " + highlightClass(row.bhApproval)}>{row.bhApproval || '-'}</td>
-                <td className={"border p-2 " + highlightClass(row.finance)}>{row.finance || '-'}</td>
-                <td className={"border p-2 " + highlightClass(row.channel)}>{row.channel || '-'}</td>
-                <td className={"border p-2 " + highlightClass(row.legal)}>{row.legal || '-'}</td>
-                <td className={"border p-2 " + highlightClass(row.partnerEsign)}>{row.partnerEsign || '-'}</td>
-                <td className={"border p-2 " + highlightClass(row.legalHeadEsign)}>{row.legalHeadEsign || '-'}</td>
-                <td className={"border p-2 " + highlightClass(row.sap)}>{row.sap || '-'}</td>
-                <td className={"border p-2 " + highlightClass(row.codeCreation)}>{row.codeCreation || '-'}</td>
-              </tr>
+              <TableRow key={i}>
+                <TableCell>{row.appNo}</TableCell>
+                <TableCell>{row.partner}</TableCell>
+                <TableCell>{row.dateSubmitted}</TableCell>
+                <TableCell sx={getCellStyle(row.chApproval)}>{row.chApproval || '-'}</TableCell>
+                <TableCell sx={getCellStyle(row.bhApproval)}>{row.bhApproval || '-'}</TableCell>
+                <TableCell sx={getCellStyle(row.finance)}>{row.finance || '-'}</TableCell>
+                <TableCell sx={getCellStyle(row.channel)}>{row.channel || '-'}</TableCell>
+                <TableCell sx={getCellStyle(row.legal)}>{row.legal || '-'}</TableCell>
+                <TableCell sx={getCellStyle(row.partnerEsign)}>{row.partnerEsign || '-'}</TableCell>
+                <TableCell sx={getCellStyle(row.legalHeadEsign)}>{row.legalHeadEsign || '-'}</TableCell>
+                <TableCell sx={getCellStyle(row.sap)}>{row.sap || '-'}</TableCell>
+                <TableCell sx={getCellStyle(row.codeCreation)}>{row.codeCreation || '-'}</TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          </TableBody>
+        </Table>
+      </Paper>
+    </Box>
   );
 };
 

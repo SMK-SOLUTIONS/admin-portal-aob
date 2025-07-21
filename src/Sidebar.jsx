@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import {
@@ -79,7 +78,7 @@ function Sidebar({ onLogout, isOpen, setIsOpen }) {
           <Box sx={{ mt: 'auto', p: 2 }}>
             <IconButton
               onClick={onLogout}
-              sx={{ color: 'white', width: '100%' }}
+              sx={{ color: 'white', width: '100%', borderRadius: '2px' }}
             >
               <LogoutIcon sx={{ mr: 1 }} /> Logout
             </IconButton>

@@ -1,69 +1,62 @@
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import {
+  Box,
+  Button,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  MenuItem,
+  Paper,
+} from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 import * as XLSX from 'xlsx';
 
-const defaultUsers = [
+const initialUsers = [
   {
     id: 1,
     name: 'John Doe',
     mobile: '9876543210',
-    city: 'Bangalore',
-    state: 'Karnataka',
-    region: 'South',
-    tcode: 'T001',
-    designation: 'BDE',
+    city: 'Mumbai',
+    state: 'MH',
+    region: 'West',
+    tcode: 'T123',
+    designation: 'CH',
     email: 'john@example.com',
-    reportingCH: 'CH1',
-    reportingBH: 'BH1',
+    ch: 'CH Name',
+    bh: 'BH Name',
   },
 ];
 
+const designations = ['BDE', 'TDM', 'CH', 'BH', 'Legal', 'Channel', 'Admin', 'Finance', 'Regional Marketing Manager', 'Super Admin'];
+
 const UserManagement = () => {
-  const [users, setUsers] = useState([]);
-  const [editingUser, setEditingUser] = useState(null);
-  const [form, setForm] = useState({
-    name: '', mobile: '', city: '', state: '', region: '', tcode: '', designation: '',
-    email: '', reportingCH: '', reportingBH: ''
-  });
-  const [auditTrail, setAuditTrail] = useState([]);
+  const [users, setUsers] = useState(initialUsers);
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({});
+  const [selectedId, setSelectedId] = useState(null);
 
-  useEffect(() => {
-    const savedUsers = JSON.parse(localStorage.getItem('users')) || defaultUsers;
-    setUsers(savedUsers);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('users', JSON.stringify(users));
-  }, [users]);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleOpen = (user = {}) => {
+    setForm(user);
+    setSelectedId(user.id || null);
+    setOpen(true);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (editingUser) {
-      const editedFields = Object.keys(form).filter(k => form[k] !== editingUser[k]);
-      const newAudit = editedFields.map(field => ({
-        field,
-        oldValue: editingUser[field],
-        newValue: form[field],
-        editedBy: 'Admin',
-        timestamp: new Date().toLocaleString(),
-        userId: editingUser.id
-      }));
-      setAuditTrail([...auditTrail, ...newAudit]);
-      setUsers(users.map(u => u.id === editingUser.id ? { ...form, id: editingUser.id } : u));
-      setEditingUser(null);
+  const handleClose = () => {
+    setForm({});
+    setSelectedId(null);
+    setOpen(false);
+  };
+
+  const handleSave = () => {
+    if (selectedId) {
+      setUsers(users.map(u => (u.id === selectedId ? { ...form, id: selectedId } : u)));
     } else {
       setUsers([...users, { ...form, id: Date.now() }]);
     }
-    setForm({ name: '', mobile: '', city: '', state: '', region: '', tcode: '', designation: '', email: '', reportingCH: '', reportingBH: '' });
-  };
-
-  const handleEdit = (user) => {
-    setForm(user);
-    setEditingUser(user);
+    handleClose();
   };
 
   const handleDelete = (id) => {
@@ -71,83 +64,77 @@ const UserManagement = () => {
   };
 
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(users);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Users');
-    XLSX.writeFile(wb, 'UserList.xlsx');
+    const worksheet = XLSX.utils.json_to_sheet(users);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Users');
+    XLSX.writeFile(workbook, 'user-management.xlsx');
   };
 
+  const columns = [
+    { field: 'name', headerName: 'Name', flex: 1 },
+    { field: 'mobile', headerName: 'Mobile', flex: 1 },
+    { field: 'city', headerName: 'City', flex: 1 },
+    { field: 'state', headerName: 'State', flex: 1 },
+    { field: 'region', headerName: 'Region', flex: 1 },
+    { field: 'tcode', headerName: 'T Code', flex: 1 },
+    { field: 'designation', headerName: 'Designation', flex: 1 },
+    { field: 'email', headerName: 'Email ID', flex: 1 },
+    { field: 'ch', headerName: 'Reporting CH', flex: 1 },
+    { field: 'bh', headerName: 'Reporting BH', flex: 1 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: (params) => (
+        <>
+          <Button size="small" onClick={() => handleOpen(params.row)}>Edit</Button>
+          <Button size="small" color="error" onClick={() => handleDelete(params.row.id)}>Delete</Button>
+        </>
+      ),
+      flex: 1
+    }
+  ];
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen text-gray-800">
-      <h1 className="text-2xl font-semibold mb-4">User Management</h1>
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4 bg-white p-4 rounded shadow mb-6">
-        {['name', 'mobile', 'city', 'state', 'region', 'tcode', 'designation', 'email', 'reportingCH', 'reportingBH'].map(field => (
-          <input
-            key={field}
-            name={field}
-            placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-            value={form[field]}
-            onChange={handleChange}
-            className="p-2 border border-gray-300 rounded w-full"
-          />
-        ))}
-        <button type="submit" className="col-span-2 bg-[#034ea2] text-white py-2 px-4 rounded hover:bg-gray-600">
-          {editingUser ? 'Update' : 'Add'} User
-        </button>
-      </form>
+    <Box p={2}>
+      <Typography variant="h6" mb={2}>User Management</Typography>
+      <Button variant="contained" sx={{ mb: 2, mr: 2, bgcolor: '#034ea2' }} onClick={() => handleOpen()}>Add User</Button>
+      <Button variant="outlined" sx={{ mb: 2, color: '#034ea2', borderColor: '#034ea2' }} onClick={exportToExcel}>Export to Excel</Button>
+      <Paper style={{ height: 500 }}>
+        <DataGrid rows={users} columns={columns} pageSize={10} />
+      </Paper>
 
-      <div className="mb-4 flex justify-between items-center">
-        <h2 className="text-lg font-medium">User List</h2>
-        <button onClick={exportToExcel} className="bg-[#034ea2] text-white px-4 py-2 rounded hover:bg-[#034da296]">Export to Excel</button>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="w-full table-auto border border-gray-300 text-sm">
-          <thead className="bg-[#eaf3fc]">
-            <tr>
-              {['Name', 'Mobile', 'City', 'State', 'Region', 'T Code', 'Designation', 'Email', 'CH', 'BH', 'Actions'].map(h => (
-                <th key={h} className="border p-2 text-left">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(u => (
-              <tr key={u.id} className="bg-white border-t">
-                <td className="border p-2">{u.name}</td>
-                <td className="border p-2">{u.mobile}</td>
-                <td className="border p-2">{u.city}</td>
-                <td className="border p-2">{u.state}</td>
-                <td className="border p-2">{u.region}</td>
-                <td className="border p-2">{u.tcode}</td>
-                <td className="border p-2">{u.designation}</td>
-                <td className="border p-2">{u.email}</td>
-                <td className="border p-2">{u.reportingCH}</td>
-                <td className="border p-2">{u.reportingBH}</td>
-                <td className="border p-2">
-                  <button onClick={() => handleEdit(u)} className="text-blue-600 mr-2">Edit</button>
-                  <button onClick={() => handleDelete(u.id)} className="text-red-600">Delete</button>
-                </td>
-              </tr>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle>{selectedId ? 'Edit User' : 'Add User'}</DialogTitle>
+        <DialogContent>
+          {['name', 'mobile', 'city', 'state', 'region', 'tcode', 'email', 'ch', 'bh'].map((field) => (
+            <TextField
+              key={field}
+              margin="dense"
+              label={field.toUpperCase()}
+              fullWidth
+              value={form[field] || ''}
+              onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+            />
+          ))}
+          <TextField
+            margin="dense"
+            select
+            label="Designation"
+            fullWidth
+            value={form.designation || ''}
+            onChange={(e) => setForm({ ...form, designation: e.target.value })}
+          >
+            {designations.map((d) => (
+              <MenuItem key={d} value={d}>{d}</MenuItem>
             ))}
-          </tbody>
-        </table>
-      </div>
-
-      <h2 className="mt-8 text-lg font-semibold">Audit Trail</h2>
-      <div className="bg-white p-4 mt-2 rounded shadow max-h-60 overflow-y-auto text-sm">
-        {auditTrail.length === 0 ? (
-          <p>No edits recorded yet.</p>
-        ) : (
-          <ul className="list-disc ml-4 space-y-1">
-            {auditTrail.map((entry, idx) => (
-              <li key={idx}>
-                [{entry.timestamp}] <strong>{entry.field}</strong> changed from <em>{entry.oldValue}</em> to <em>{entry.newValue}</em> by <strong>{entry.editedBy}</strong>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
+          </TextField>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} sx={{ color: '#034ea2', borderColor: '#034ea2' }}>Cancel</Button>
+          <Button variant="contained" sx={{ bgcolor: '#034ea2' }} onClick={handleSave}>Save</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 

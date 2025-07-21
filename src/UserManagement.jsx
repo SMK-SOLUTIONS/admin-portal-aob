@@ -128,8 +128,8 @@ const UserManagement = () => {
   return (
     <Box p={2}>
       <Typography variant="h6" mb={2}>User Management</Typography>
-      <Button variant="contained" sx={{ mb: 2, mr: 2 }} onClick={() => handleOpen()}>Add User</Button>
-      <Button variant="outlined" sx={{ mb: 2 }} onClick={exportToExcel}>Export to Excel</Button>
+      <Button variant="contained" sx={{ mb: 2, mr: 2, bgcolor: '#034ea2' }} onClick={() => handleOpen()}>Add User</Button>
+      <Button variant="outlined" sx={{ mb: 2, color: '#034ea2', borderColor: '#034ea2'  }} onClick={exportToExcel}>Export to Excel</Button>
       <Paper style={{ height: 500 }}>
         <DataGrid rows={users} columns={columns} pageSize={10} getRowHeight={() => 'auto'} />
       </Paper>

@@ -1,39 +1,92 @@
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import AgilusLogoBlue from './Agilus Logo-blue-bg.jpg';
+import { NavLink } from 'react-router-dom';
+import {
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Toolbar,
+  Box,
+  Typography,
+  Divider,
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import LogoutIcon from '@mui/icons-material/Logout';
 
-function Sidebar({ onLogout }) {
-  const getLinkClasses = ({ isActive }) =>
-    `p-2 rounded ${
-      isActive
-        ? 'bg-[#eaf3fc] text-[#034ea2] font-semibold'
-        : 'hover:bg-[#0256b5]'
-    }`;
+function Sidebar({ onLogout, isOpen, setIsOpen }) {
+  const toggleDrawer = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const navItems = [
+    { path: '/', label: 'Home' },
+    { path: '/users', label: 'User Management' },
+    { path: '/rbac', label: 'RBAC' },
+    { path: '/applications', label: 'Applications' },
+    { path: '/summary-report', label: 'Summary Report' },
+    { path: '/detailed-report', label: 'Detailed Report' },
+    { path: '/stamp-report', label: 'Stamp Report' },
+    { path: '/ch-dashboard', label: 'CH Dashboard' },
+    { path: '/bh-dashboard', label: 'BH Dashboard' },
+  ];
 
   return (
-    <div className="w-52 min-h-screen bg-[#0076bc] text-white p-4 flex flex-col justify-between">
-      <div>
-        <img src={AgilusLogoBlue} alt="Logo" className="mb-6 w-40" />
-        <h2 className="text-xl font-bold mb-6">Admin Portal</h2>
-        <nav className="flex flex-col gap-2">
-          <NavLink to="/" className={getLinkClasses}>Home</NavLink>
-          <NavLink to="/users" className={getLinkClasses}>User Management</NavLink>
-          <NavLink to="/rbac" className={getLinkClasses}>RBAC</NavLink>
-          <NavLink to="/applications" className={getLinkClasses}>Applications</NavLink>
-          <NavLink to="/summary-report" className={getLinkClasses}>Summary Report</NavLink>
-          <NavLink to="/detailed-report" className={getLinkClasses}>Detailed Report</NavLink>
-          <NavLink to="/stamp-report" className={getLinkClasses}>Stamp Report</NavLink>
-          <NavLink to="/ch-dashboard" className={getLinkClasses}>CH Dashboard</NavLink>
-          <NavLink to="/bh-dashboard" className={getLinkClasses}>BH Dashboard</NavLink>
-        </nav>
-      </div>
-      <button
-        onClick={onLogout}
-        className="mt-6 bg-white hover:bg-[#eaf3fc] p-2 rounded text-[#034ea2]"
-      >
-        Logout
-      </button>
-    </div>
+    <>
+      {!isOpen && (
+        <IconButton
+          onClick={toggleDrawer}
+          sx={{ position: 'fixed', top: 16, left: 16, zIndex: 1300, color: 'white', bgcolor: '#034ea2' }}
+        >
+          <MenuIcon />
+        </IconButton>
+      )}
+      <Box component="nav">
+        <Drawer
+          variant="persistent"
+          anchor="left"
+          open={isOpen}
+          PaperProps={{ sx: { width: 240, bgcolor: '#034ea2', color: 'white' } }}
+        >
+          <Toolbar sx={{ justifyContent: 'space-between', bgcolor: '#034ea2' }}>
+            <Typography variant="h6" noWrap component="div">
+              Admin Portal
+            </Typography>
+            <IconButton onClick={toggleDrawer} sx={{ color: 'white' }}>
+              <MenuIcon />
+            </IconButton>
+          </Toolbar>
+          <Divider sx={{ borderColor: 'white', opacity: 0.2 }} />
+          <List>
+            {navItems.map(({ path, label }) => (
+              <ListItem
+                button
+                key={label}
+                component={NavLink}
+                to={path}
+                style={({ isActive }) => ({
+                  backgroundColor: isActive ? '#eaf3fc' : 'transparent',
+                  color: isActive ? '#034ea2' : 'white',
+                  textDecoration: 'none',
+                })}
+                sx={{ pl: 2 }}
+              >
+                <ListItemText primary={label} />
+              </ListItem>
+            ))}
+          </List>
+          <Box sx={{ mt: 'auto', p: 2 }}>
+            <IconButton
+              onClick={onLogout}
+              sx={{ color: 'white', width: '100%' }}
+            >
+              <LogoutIcon sx={{ mr: 1 }} /> Logout
+            </IconButton>
+          </Box>
+        </Drawer>
+      </Box>
+    </>
   );
 }
 

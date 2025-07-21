@@ -1,21 +1,22 @@
-
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import LoginPage from './LoginPage';
 import Home from './Home';
 import UserManagement from './UserManagement';
-import Rbac from './RBAC';
+import RBAC from './RBAC';
 import ApplicationAccess from './ApplicationAccess';
 import SummaryReport from './SummaryReport';
 import DetailedApplicationReport from './DetailedApplicationReport';
 import StampPaperReport from './StampPaperReport';
 import CHDashboard from './CHDashboard';
 import BHDashboard from './BHDashboard';
-import './LayoutScroll.css';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,15 +40,24 @@ function App() {
   if (!user) return <LoginPage onLogin={handleLogin} />;
 
   return (
-    <div className="flex layout-container">
-      <div className="sidebar-scroll">
-        <Sidebar onLogout={handleLogout} />
-      </div>
-      <div className="flex-1 p-4 bg-gray-50 min-h-screen main-scroll">
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <Sidebar onLogout={handleLogout} isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 2,
+          bgcolor: 'background.default',
+          minHeight: '100vh',
+          marginLeft: isSidebarOpen ? '240px' : 0,
+          transition: 'margin-left 0.3s ease',
+        }}
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/users" element={<UserManagement />} />
-          <Route path="/rbac" element={<Rbac />} />
+          <Route path="/rbac" element={<RBAC />} />
           <Route path="/applications" element={<ApplicationAccess />} />
           <Route path="/summary-report" element={<SummaryReport />} />
           <Route path="/detailed-report" element={<DetailedApplicationReport />} />
@@ -56,8 +66,8 @@ function App() {
           <Route path="/bh-dashboard" element={<BHDashboard />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

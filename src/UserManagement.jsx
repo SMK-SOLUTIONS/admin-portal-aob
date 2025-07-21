@@ -10,7 +10,11 @@ import {
   TextField,
   MenuItem,
   Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DataGrid } from '@mui/x-data-grid';
 import * as XLSX from 'xlsx';
 
@@ -27,6 +31,15 @@ const initialUsers = [
     email: 'john@example.com',
     ch: 'CH Name',
     bh: 'BH Name',
+    audit: [
+      {
+        field: 'email',
+        oldValue: 'john@old.com',
+        newValue: 'john@example.com',
+        editedBy: 'admin',
+        timestamp: '2025-07-21 10:12 AM'
+      }
+    ]
   },
 ];
 
@@ -52,9 +65,27 @@ const UserManagement = () => {
 
   const handleSave = () => {
     if (selectedId) {
-      setUsers(users.map(u => (u.id === selectedId ? { ...form, id: selectedId } : u)));
+      const original = users.find(u => u.id === selectedId);
+      const changes = Object.keys(form).reduce((acc, key) => {
+        if (form[key] !== original[key]) {
+          acc.push({
+            field: key,
+            oldValue: original[key],
+            newValue: form[key],
+            editedBy: 'admin',
+            timestamp: new Date().toLocaleString(),
+          });
+        }
+        return acc;
+      }, []);
+
+      setUsers(users.map(u =>
+        u.id === selectedId
+          ? { ...form, id: selectedId, audit: [...(u.audit || []), ...changes] }
+          : u
+      ));
     } else {
-      setUsers([...users, { ...form, id: Date.now() }]);
+      setUsers([...users, { ...form, id: Date.now(), audit: [] }]);
     }
     handleClose();
   };
@@ -97,11 +128,35 @@ const UserManagement = () => {
   return (
     <Box p={2}>
       <Typography variant="h6" mb={2}>User Management</Typography>
-      <Button variant="contained" sx={{ mb: 2, mr: 2, bgcolor: '#034ea2' }} onClick={() => handleOpen()}>Add User</Button>
-      <Button variant="outlined" sx={{ mb: 2, color: '#034ea2', borderColor: '#034ea2' }} onClick={exportToExcel}>Export to Excel</Button>
+      <Button variant="contained" sx={{ mb: 2, mr: 2 }} onClick={() => handleOpen()}>Add User</Button>
+      <Button variant="outlined" sx={{ mb: 2 }} onClick={exportToExcel}>Export to Excel</Button>
       <Paper style={{ height: 500 }}>
-        <DataGrid rows={users} columns={columns} pageSize={10} />
+        <DataGrid rows={users} columns={columns} pageSize={10} getRowHeight={() => 'auto'} />
       </Paper>
+
+      <Box mt={4}>
+        <Typography variant="h6" mb={1}>Audit Trail</Typography>
+        {users.map(user => (
+          <Accordion key={user.id}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>{user.name} ({user.designation})</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              {(user.audit || []).length === 0 ? (
+                <Typography variant="body2">No edits recorded.</Typography>
+              ) : (
+                <ul>
+                  {user.audit.map((a, idx) => (
+                    <li key={idx}>
+                      <strong>{a.field}:</strong> "{a.oldValue}" → "{a.newValue}" by {a.editedBy} on {a.timestamp}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </AccordionDetails>
+          </Accordion>
+        ))}
+      </Box>
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>{selectedId ? 'Edit User' : 'Add User'}</DialogTitle>
@@ -130,8 +185,8 @@ const UserManagement = () => {
           </TextField>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: '#034ea2', borderColor: '#034ea2' }}>Cancel</Button>
-          <Button variant="contained" sx={{ bgcolor: '#034ea2' }} onClick={handleSave}>Save</Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button variant="contained" onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
     </Box>

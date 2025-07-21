@@ -36,7 +36,7 @@ function Sidebar({ onLogout, isOpen, setIsOpen }) {
       {!isOpen && (
         <IconButton
           onClick={toggleDrawer}
-          sx={{ position: 'fixed', top: 16, left: 16, zIndex: 1300, color: 'white', bgcolor: '#034ea2' }}
+          sx={{ position: 'fixed', top: 16, left: 16, zIndex: 1300, color: 'white', bgcolor: '#034ea2', '&:hover': { bgcolor: '#eaf3fc' } }}
         >
           <MenuIcon />
         </IconButton>

@@ -10,7 +10,7 @@ function LoginPage({ onLogin }) {
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [useOtp, setUseOtp] = useState(true);
-  const [logoLoaded, setLogoLoaded] = useState(false); 
+
   const handleLogin = () => {
     if ((useOtp && otp === '123456') || (!useOtp && password === 'admin')) {
       sessionStorage.setItem('isLoggedIn', 'true');
@@ -23,20 +23,8 @@ function LoginPage({ onLogin }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-[#034ea2] to-gray-400">
       <div className="bg-white p-10 rounded-3xl shadow-lg w-full max-w-md text-center">
-        <div className="relative mb-6 w-52 mx-auto h-20 flex items-center justify-center">
-          {!logoLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              {/* Simple spinner */}
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#034ea2]"></div>
-            </div>
-          )}
-          <img
-            src={AgilusLogo}
-            alt="Logo"
-            className={`mx-auto w-52 transition-opacity duration-300 ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
-            onLoad={() => setLogoLoaded(true)}
-          />
-        </div>        {step === 1 && (
+        <img src={AgilusLogo} alt="Logo" className="mx-auto mb-6 w-52" />
+        {step === 1 && (
           <>
             <label className="block text-left font-semibold text-[#034ea2] mb-2">Mobile / Email ID
             <input

@@ -1,4 +1,15 @@
-
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
+} from '@mui/material';
 import { useState } from 'react';
 import * as XLSX from 'xlsx';
 
@@ -60,65 +71,77 @@ const SummaryReport = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen text-gray-800">
-      <h1 className="text-2xl font-semibold mb-4">Monthly Region-wise Application Approval Summary</h1>
+    <Box p={4} sx={{ bgcolor: '#f9fafb', minHeight: '100vh' }}>
+      <Typography variant="h5" mb={3}>
+        Monthly Region-wise Application Approval Summary
+      </Typography>
 
-      <div className="flex items-center space-x-4 mb-4">
-        <label className="text-sm font-medium">Filter by Month:</label>
-        <input
+      <Box display="flex" alignItems="center" gap={2} mb={3}>
+        <TextField
+          label="Filter by Month"
           type="month"
+          size="small"
           value={filterMonth}
           onChange={(e) => setFilterMonth(e.target.value)}
-          className="p-2 border border-gray-300 rounded"
         />
-        <button onClick={exportToExcel} className="bg-[#034ea2] text-white px-4 py-2 rounded hover:bg-[#034da296]">Export to Excel</button>
-      </div>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: '#034ea2' }}
+          onClick={exportToExcel}
+        >
+          Export to Excel
+        </Button>
+      </Box>
 
-      <div className="overflow-x-auto bg-white shadow rounded-lg p-4">
-        <table className="min-w-full text-sm border border-gray-300">
-          <thead className="bg-[#eaf3fc]">
-            <tr>
-              {['Region', 'CH Name', 'Logins', 'CH', 'BH', 'Finance', 'Channel', 'Legal', 'Partner E-sign', 'Legal Head E-sign', 'SAP', 'Code'].map(col => (
-                <th key={col} className="border p-2 text-left">{col}</th>
+      <Paper sx={{ overflowX: 'auto' }}>
+        <Table size="small">
+          <TableHead sx={{ backgroundColor: '#eaf3fc' }}>
+            <TableRow>
+              {[
+                'Region', 'CH Name', 'Logins', 'CH', 'BH', 'Finance',
+                'Channel', 'Legal', 'Partner E-sign', 'Legal Head E-sign', 'SAP', 'Code'
+              ].map(col => (
+                <TableCell key={col}><strong>{col}</strong></TableCell>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {filteredData.map((row, i) => (
-              <tr key={i} className="bg-white border-t">
-                <td className="border p-2">{row.region}</td>
-                <td className="border p-2">{row.chName}</td>
-                <td className="border p-2">{row.logins}</td>
-                <td className="border p-2">{row.ch}</td>
-                <td className="border p-2">{row.bh}</td>
-                <td className="border p-2">{row.finance}</td>
-                <td className="border p-2">{row.channel}</td>
-                <td className="border p-2">{row.legal}</td>
-                <td className="border p-2">{row.partnerEsign}</td>
-                <td className="border p-2">{row.legalHeadEsign}</td>
-                <td className="border p-2">{row.sap}</td>
-                <td className="border p-2">{row.codeCreation}</td>
-              </tr>
+              <TableRow key={i}>
+                <TableCell>{row.region}</TableCell>
+                <TableCell>{row.chName}</TableCell>
+                <TableCell>{row.logins}</TableCell>
+                <TableCell>{row.ch}</TableCell>
+                <TableCell>{row.bh}</TableCell>
+                <TableCell>{row.finance}</TableCell>
+                <TableCell>{row.channel}</TableCell>
+                <TableCell>{row.legal}</TableCell>
+                <TableCell>{row.partnerEsign}</TableCell>
+                <TableCell>{row.legalHeadEsign}</TableCell>
+                <TableCell>{row.sap}</TableCell>
+                <TableCell>{row.codeCreation}</TableCell>
+              </TableRow>
             ))}
+
             {filteredData.length > 0 && (
-              <tr className="bg-[#eaf3fc] font-semibold">
-                <td className="border p-2" colSpan={2}>Total</td>
-                <td className="border p-2">{totals.logins}</td>
-                <td className="border p-2">{totals.ch}</td>
-                <td className="border p-2">{totals.bh}</td>
-                <td className="border p-2">{totals.finance}</td>
-                <td className="border p-2">{totals.channel}</td>
-                <td className="border p-2">{totals.legal}</td>
-                <td className="border p-2">{totals.partnerEsign}</td>
-                <td className="border p-2">{totals.legalHeadEsign}</td>
-                <td className="border p-2">{totals.sap}</td>
-                <td className="border p-2">{totals.codeCreation}</td>
-              </tr>
+              <TableRow sx={{ backgroundColor: '#eaf3fc', fontWeight: 'bold' }}>
+                <TableCell colSpan={2}><strong>Total</strong></TableCell>
+                <TableCell>{totals.logins || 0}</TableCell>
+                <TableCell>{totals.ch || 0}</TableCell>
+                <TableCell>{totals.bh || 0}</TableCell>
+                <TableCell>{totals.finance || 0}</TableCell>
+                <TableCell>{totals.channel || 0}</TableCell>
+                <TableCell>{totals.legal || 0}</TableCell>
+                <TableCell>{totals.partnerEsign || 0}</TableCell>
+                <TableCell>{totals.legalHeadEsign || 0}</TableCell>
+                <TableCell>{totals.sap || 0}</TableCell>
+                <TableCell>{totals.codeCreation || 0}</TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          </TableBody>
+        </Table>
+      </Paper>
+    </Box>
   );
 };
 
